@@ -109,29 +109,52 @@ def grade(matrix,size):
     return index1, index2
 
 def optimizer(matrix, size, now, temp_path, num_best):
+    matrix_copy = list()
+    for row in matrix:
+        new_row = list()
+        for el in row:
+            new_row.append(el)
+        matrix_copy.append(new_row)
+
     lower = reduce_count(matrix, size)
     temp_matrix = reduce(matrix, size)
     num_best = int(num_best)
 
+    matrix = matrix_copy
+
     if lower + now > num_best:
         return None, None
     else:
+        print("Inner0")
+
+        [print(matrix[i] == el) for i, el in enumerate(temp_matrix)]
+        print(temp_matrix)
+        print(matrix)
+        print(np.array_equal(temp_matrix, matrix))
+
+
         if np.array_equal(temp_matrix, matrix):
             return now, temp_path
         else:
+            print("Inner01")
             index1, index2 = grade(temp_matrix, size)
             temp_matrix1 = deletion(temp_matrix, size, index1, index2)
             i, j = optimizer(temp_matrix1, size, now + lower, temp_path + str(index2), num_best)
             if i is not None and j is not None:
                 num_best = i
                 best_path = j
+                print("Inner1")
             temp_matrix2 = temp_matrix.copy()
             temp_matrix2[index1, index2] = 99999
             h, k = optimizer(temp_matrix2, size, now, temp_path, num_best)
             if h is not None and k is not None:
                 num_best = h
                 best_path = k
+                print("Inner2")
+    
     return num_best, best_path
+
+
 def main():
     total_solved = 0
     start_time = time.time()
@@ -159,6 +182,7 @@ def main():
         print(best_path, num_best)
         
         total_solved += 1
+        break
 
     print(f"Total matrices solved: {total_solved}")
 
